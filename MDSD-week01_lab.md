@@ -1807,28 +1807,33 @@ Text (message text)
 
 **Prompt แบบ Simple:**
 ```
-อธิบายความแตกต่างระหว่าง StatelessWidget และ StatefulWidget โดยสั้นๆ พร้อมตัวอย่างโค้ดสั้นๆ เป็นภาษาไทย
+เขียน Flutter Widget ชื่อ WeatherCard ที่แสดง:
+- ชื่อเมือง
+- อุณหภูมิ (ตัวเลขขนาดใหญ่)
+- ไอคอนสภาพอากาศ (sunny/cloudy/rainy)
+- ความชื้น
 ```
 
 **Prompt แบบ Detailed:**
 ```
-คุณคือนักสอน Flutter ที่อธิบายเข้าใจง่ายให้ผู้เริ่มต้น (language: Thai).
-งาน: อธิบายความต่างระหว่าง `StatelessWidget` และ `StatefulWidget`.
-ผลลัพธ์ที่ต้องการ (structure):
-1) สรุปสั้น 2-3 ประโยค
-2) เมื่อไหร่ควรใช้ (3 ข้อ ข้อๆละสั้นๆ)
-3) ตัวอย่างโค้ด Dart สองชิ้น (หนึ่งเป็น Stateless หนึ่งเป็น Stateful) - ให้โค้ดครบ `import` และ minimal runnable snippet
-4) ข้อควรระวัง / ข้อดีข้อเสียสั้นๆ (2–4 ข้อ)
-ข้อจำกัด: ตอบไม่เกิน 300 คำ, ให้โค้ดใน fenced code block, เน้นภาษาง่ายสำหรับผู้เรียน
+คุณเป็น Flutter Developer ผู้เชี่ยวชาญ
+สร้าง Flutter Widget ชื่อ WeatherCard โดย:
+1. รับ parameters: city (String), temperature (double), condition (String), humidity (int)
+2. แสดง UI สวยงามด้วย Card Widget
+3. ใช้ Icons.wb_sunny สำหรับ "sunny", Icons.cloud สำหรับ "cloudy", Icons.water_drop สำหรับ "rainy"
+4. ใช้ Color scheme สีฟ้า-ขาว
+5. ขนาดอุณหภูมิต้องใหญ่และชัดเจน
+ให้โค้ดที่สมบูรณ์และใช้งานได้เลย ไม่ต้อง Comment
 ```
 
 **ความแตกต่างของผลลัพธ์:**
 ```
-- ความยาว & โครงสร้าง: Prompt แบบ Simple มักให้คำตอบสั้น กระชับ แต่ไม่มีโครงสร้างชัดเจน; แบบ Detailed จะได้คำตอบเป็นหัวข้อ ตามรูปแบบที่ขอ (สรุป, การใช้งาน, โค้ด, ข้อควรระวัง)
-- ความแม่นยำของโค้ด: Detailed มักให้โค้ดที่ใช้งานได้จริงและครบ context (imports, widget tree) ขณะที่ Simple อาจได้แค่โค้ดย่อ/แนวคิด
-- การควบคุมสไตล์/ภาษา: Detailed ให้กำหนดภาษาที่ใช้, ความยาว, รูปแบบการตอบ ทำให้ผลลัพธ์สอดคล้องกับความต้องการมากขึ้น
-- ความเสี่ยงของ hallucination: Detailed ลดความเสี่ยงเพราะบังคับโครงสร้างและรูปแบบตรวจสอบได้ง่ายกว่า
-- ต้นทุนเวลา/แรงงาน: Simple เร็วในการเขียน แต่ต้อง iterate เพิ่มถ้าอยากได้รายละเอียด; Detailed ต้องคิดให้ชัดตอนเขียน prompt แต่ได้ผลลัพธ์ที่ใช้ได้เลย
+ความชัดเจนของโค้ด (Code Completeness)
+Prompt แบบ Simple ให้ผลลัพธ์เป็นโครงสร้าง Widget กว้างๆ แต่ไม่ได้ระบุว่าต้องรับ
+Parameter ชนิดใดบ้าง ทำให้ AI ต้องเดาเองว่าจะตั้งชื่อตัวแปรว่าอะไร ใช้ Data Type ไหน
+ส่วน Prompt แบบ Detailed ระบุ Parameter และชนิดข้อมูลชัดเจน (city: String,
+temperature: double, condition: String, humidity: int) ทำให้ได้โค้ดที่พร้อมใช้งาน
+ทันทีโดยไม่ต้องแก้ไข Signature ของ Constructor เพิ่ม
 ```
 
 ### 3.5 Screenshot ของ AI Chat App
