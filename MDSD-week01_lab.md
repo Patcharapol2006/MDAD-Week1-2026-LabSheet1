@@ -1728,15 +1728,16 @@ flutter doctor output:
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 
-Flutter Version: ___________________
-Dart Version: ______________________
-Android SDK Version: _______________
+Flutter Version: ____ 3.44.5__________
+Dart Version: __________3.12.2____________
+Android SDK Version: ______34.0.0_________
 ```
 
 ### 3.2 Screenshot ของ Flutter App
 
 ```
-[แนบ Screenshot ของ Profile Card App ที่สร้าง]
+<img width="1261" height="711" alt="image" src="https://github.com/user-attachments/assets/c8e42356-8799-480f-94cf-4a6fa2b1394f" />
+
 ```
 
 **Widget Tree ที่วาด:**
@@ -1744,19 +1745,57 @@ Android SDK Version: _______________
 ```
 (วาด Widget Tree ของแอปที่สร้างด้วยมือ)
 
-MaterialApp
-└── ?
-    └── ?
-        └── ...
+Widget Tree
+
+Profile Page (main.dart)
+
+Scaffold
+AppBar
+Text('โปรไฟล์ของฉัน')
+Body: SingleChildScrollView
+Column
+SizedBox (top spacing)
+CircleAvatar (รูปโปรไฟล์ / Icon)
+SizedBox
+Text (ชื่อ)
+SizedBox
+Text (รหัสนักศึกษา)
+SizedBox
+Card (ข้อมูล)
+Padding
+Column
+Row / _buildInfoRow (Icon, Text label, Expanded(Text value)) // คณะ
+Divider
+Row / _buildInfoRow (Icon, Text label, Expanded(Text value)) // วิชาที่ชอบ
+Divider
+Row / _buildInfoRow (Icon, Text label, Expanded(Text value)) // เป้าหมาย
+SizedBox
+ElevatedButton.icon (ไปหน้า AI Chat)
+AI Chat Page (ai_chat_page.dart)
+
+Scaffold
+AppBar
+Text("Gemini AI Chat")
+Body: Column
+Expanded
+(if _messages.isEmpty)
+Center
+Text("👋 Hello Gemini")
+else
+ListView.builder
+for each message:
+Align (alignment: right for user, left for assistant)
+Container (margin, padding, maxWidth)
+Text (message text)
 ```
 
 ### 3.3 การเปรียบเทียบ Hot Reload vs Hot Restart
 
 | รายการ | Hot Reload (r) | Hot Restart (R) |
 |---|---|---|
-| ความเร็ว | | |
-| State ถูก Reset? | | |
-| ใช้เมื่อไหร่ | | |
+| ความเร็ว |รวดเร็วมาก — เกือบทันที (มิลลิวินาที–วินาที) |ช้ากว่า — รีสตาร์ทแอป/VM ใช้เวลาเป็นวินาที |
+| State ถูก Reset? |โดยทั่วไป: ไม่ถูกรีเซ็ต — รักษา Stateful widget state ไว้ (ยกเว้นการเปลี่ยนแปลงบางอย่างที่ไม่รองรับ) | ใช่: รีเซ็ตสถานะทั้งหมดของแอป (เรียก main() ใหม่, โหลดค่าเริ่มต้นใหม่)|
+| ใช้เมื่อไหร่ |เปลี่ยน UI, แก้ layout, ปรับ styles, แก้โค้ดที่เกี่ยวกับ build() หรือ logic เล็กน้อย ขณะที่ต้องการรักษาสถานะเดิม |เมื่อต้องการรีเซ็ตสถานะหรือเปลี่ยนสิ่งที่ Hot Reload ไม่รองรับ เช่น เปลี่ยน main()/ตัวแปรคงที่ระดับแอป, init-time code, native plugin changes, หรือเมื่อต้องการเริ่มแอปจากสถานะเริ่มต้น |
 
 ### 3.4 ผลการทดลอง Prompt Engineering
 
@@ -1790,34 +1829,36 @@ MaterialApp
 **1.** Flutter แตกต่างจาก React Native อย่างไรในแง่ของ Rendering Engine?
 
 ```
-คำตอบ: _______________________________________________
+คำตอบ: Flutter ใช้เอนจินการเรนเดอร์ของตัวเอง (Skia) วาด UI เป็นภาพลงบน canvas โดยตรง — ไม่พึ่ง native widgets ของแพลตฟอร์ม ทำให้ได้ UI ที่เหมือนกันข้ามแพลตฟอร์มและควบคุมพิกเซลได้ละเอียด ส่วน React Native แปลง JSX/JS เป็นคำสั่งเพื่อสร้างหรืออัปเดต native view โดยใช้ bridge/JS thread ซึ่งหมายถึงการพึ่งพาการเรนเดอร์ของระบบปฏิบัติการและ native components ส่งผลให้ได้ลุค native แต่มี overhead จากการสื่อสารข้ามชั้นและความต่างของพฤติกรรมบนแต่ละแพลตฟอร์ม
 ```
 
 **2.** อธิบายความแตกต่างระหว่าง `StatelessWidget` และ `StatefulWidget` พร้อมยกตัวอย่างการใช้งานที่เหมาะสมของแต่ละประเภท
 
 ```
-คำตอบ: _______________________________________________
+คำตอบ: `StatelessWidget` ไม่มีสถานะภายใน (immutable) — สร้าง UI จากค่าที่รับเข้ามาและจะไม่เปลี่ยนโดยตัวมันเอง เหมาะกับ UI คงที่ เช่น ป้ายหัวข้อ (`Text`), ไอคอน, ปุ่มที่เรียก callback แต่ไม่มีสถานะภายใน. 
+`StatefulWidget` คู่กับ `State` ที่เก็บสถานะซึ่งสามารถเปลี่ยนได้และเรียก `setState()` เพื่อรีบิวด์ เหมาะกับ UI ที่ตอบสนองต่อการโต้ตอบ/ข้อมูลที่เปลี่ยน เช่น ฟอร์ม (`TextField`), แชทที่มีข้อความใหม่, animation controllers, toggle/checkbox.
+ตัวอย่าง: หัวเพจเป็น `StatelessWidget` แต่แบบฟอร์มที่มี `TextField` และปุ่มส่งควรเป็น `StatefulWidget`.
 ```
 
 **3.** เหตุใดจึงห้าม Commit API Key ลง Git Repository? และมีวิธีจัดการ API Key อย่างปลอดภัยอย่างไรบ้าง?
 
 ```
-คำตอบ: _______________________________________________
+คำตอบ: ห้ามเพราะการเปิดเผย API Key ใน repo ทำให้ผู้อื่นใช้คีย์นั้น (ค่าใช้จ่าย/การละเมิดข้อมูล/ถูกโจมตี) และเสี่ยงด้านความเป็นส่วนตัวและกฏข้อบังคับ. วิธีปลอดภัย: เก็บคีย์นอกโค้ด (env vars), ใช้ secret manager (GCP Secret Manager, AWS Secrets Manager, Azure Key Vault), ใช้ CI/CD secrets, เก็บไฟล์ .env ที่ถูกเพิ่มใน .gitignore และโหลดตอน runtime (เช่น flutter_dotenv), จำกัดสิทธิ์ของคีย์ (scopes, IP/domain restrictions), หมุน (rotate) คีย์เป็นประจำ และ log เฉพาะการใช้งานไม่ใช่ค่าคีย์จริง.
 ```
 
 **4.** Hot Reload ทำงานอย่างไร และมีข้อจำกัดอะไรบ้าง?
 
 ```
-คำตอบ: _______________________________________________
+คำตอบ: Hot Reload จะฉีดโค้ด Dart ที่เปลี่ยนเข้าไปใน VM/Isolate ที่กำลังรันแล้ว รีรัน `build()` ของ widget tree โดยพยายามรักษา `State` ของ `StatefulWidget` ไว้ ทำให้เห็นผลการเปลี่ยนแปลงเร็วโดยไม่ต้องรีสตาร์ทแอปทั้งตัว. ข้อจำกัด: ไม่รองรับการเปลี่ยนที่กระทบ initialization-level เช่น เปลี่ยน `main()` หรือตัวแปร static ที่ถูกกำหนดตอนเริ่ม, การเปลี่ยน native code (แพ็กเกจที่ต้อง rebuild native), การเปลี่ยน signature ของ constructor/class บางกรณี, การเปลี่ยน dependencies ใน `pubspec.yaml` หรือเพิ่มแพ็กเกจใหม่ ต้องใช้ Hot Restart หรือ full rebuild; บางการเปลี่ยนโครงสร้าง State (เช่น ย้าย/ลบฟิลด์ใน State) อาจทำให้ state ไม่ตรงหรือจำเป็นต้อง restart.
 ```
 
 **5.** จากการทดลองใช้ Gemini API ในวันนี้ คุณคิดว่าสามารถนำ AI มาช่วยพัฒนาแอปในแง่ไหนได้บ้าง? ยกตัวอย่าง Use Case 3 อย่าง
 
 ```
-คำตอบ: 
-1. _______________________________________________
-2. _______________________________________________
-3. _______________________________________________
+คำตอบ:
+1) In-app Conversational UX / Support — ใส่ chatbot ช่วยตอบคำถามผู้ใช้, ช่วยค้นเอกสาร/FAQ, ทำ onboarding แบบโต้ตอบ
+2) Developer Productivity — ให้ AI ช่วยเขียนตัวอย่างโค้ด, สร้าง unit/widget tests, ช่วยรีแฟคเตอร์หรืออธิบายบั๊ก เพิ่มความเร็วในการพัฒนา
+3) Content Generation & Personalization — สร้างข้อความอัตโนมัติ (เช่น คำอธิบายสินค้า, สรุปข่าว), แปล/ปรับภาษา, หรือสร้าง recommendation/prompt-based content ให้เหมาะกับผู้ใช้แต่ละคน
 ```
 
 ---
